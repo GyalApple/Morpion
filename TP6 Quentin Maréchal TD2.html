@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Morpion</title>
+    <link rel="stylesheet" href="morpion-style.css" />
+</head>
+<body>
+    <h2 id="joueur-nom">Tour du <span id="nom-joueur">Joueur 1</span></h2> <!-- Ajout de l'élément pour afficher le nom du joueur -->
+
+    <label for="nom-joueur-1">Nom du Joueur 1:</label>
+    <input type="text" id="nom-joueur-1" placeholder="Entrez le nom du Joueur 1" />
+    <br>
+    <label for="nom-joueur-2">Nom du Joueur 2:</label>
+    <input type="text" id="nom-joueur-2" placeholder="Entrez le nom du Joueur 2" />
+    <br>
+    <button id="confirmer" onclick="confirmerNoms()">Confirmer</button>
+    <br>
+
+    <table class="morpion-table">
+        <tbody>
+            <tr>
+                <td id="00" onclick="clique(event)"></td>
+                <td id="01" onclick="clique(event)"></td>
+                <td id="02" onclick="clique(event)"></td>
+            </tr>
+            <tr>
+                <td id="10" onclick="clique(event)"></td>
+                <td id="11" onclick="clique(event)"></td>
+                <td id="12" onclick="clique(event)"></td>
+            </tr>
+            <tr>
+                <td id="20" onclick="clique(event)"></td>
+                <td id="21" onclick="clique(event)"></td>
+                <td id="22" onclick="clique(event)"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        let Partie = [
+            [undefined, undefined, undefined],
+            [undefined, undefined, undefined],
+            [undefined, undefined, undefined]
+        ];
+
+        let nomJoueur1 = 'Joueur 1';
+        let nomJoueur2 = 'Joueur 2';
+        let joueur_actuel = 'Joueur1';
+        let mouvement_joueur = {
+            'Joueur1': 'X',
+            'Joueur2': 'O'
+        };
+
+        function updatePlayerName() {
+            const nomJoueurElement = document.getElementById('nom-joueur');
+            nomJoueurElement.textContent = joueur_actuel === 'Joueur1' ? nomJoueur1 : nomJoueur2;
+        }
+
+        updatePlayerName();
+
+        function clique(event) {
+            const caseId = event.target.id;
+            const ligne = parseInt(caseId[0]);
+            const colonne = parseInt(caseId[1]);
+
+            if (!Partie[ligne][colonne]) {
+                const symboleJoueur = mouvement_joueur[joueur_actuel];
+                Partie[ligne][colonne] = symboleJoueur;
+                event.target.textContent = symboleJoueur;
+                checkWin();
+                togglePlayer();
+                updatePlayerName();
+            }
+        }
+
+        function checkRows() {
+            for (let ligne = 0; ligne < Partie.length; ligne++) {
+                if (
+                    Partie[ligne][0] &&
+                    Partie[ligne][0] === Partie[ligne][1] &&
+                    Partie[ligne][0] === Partie[ligne][2]
+                ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function checkColumns() {
+            for (let colonne = 0; colonne < Partie[0].length; colonne++) {
+                if (
+                    Partie[0][colonne] &&
+                    Partie[0][colonne] === Partie[1][colonne] &&
+                    Partie[0][colonne] === Partie[2][colonne]
+                ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function checkDiagonals() {
+            if (
+                Partie[0][0] &&
+                Partie[0][0] === Partie[1][1] &&
+                Partie[0][0] === Partie[2][2]
+            ) {
+                return true;
+            }
+            if (
+                Partie[0][2] &&
+                Partie[0][2] === Partie[1][1] &&
+                Partie[0][2] === Partie[2][0]
+            ) {
+                return true;
+            }
+            return false;
+        }
+
+        function checkWin() {
+            if (checkRows() || checkColumns() || checkDiagonals()) {
+                alert(joueur_actuel === 'Joueur1' ? nomJoueur1 : nomJoueur2 + " a gagné !");
+                window.location.reload(true);
+            }
+        }
+
+        function togglePlayer() {
+            if (joueur_actuel === 'Joueur1') {
+                joueur_actuel = 'Joueur2';
+            } else {
+                joueur_actuel = 'Joueur1';
+            }
+        }
+
+        function confirmerNoms() {
+            nomJoueur1 = document.getElementById('nom-joueur-1').value;
+            nomJoueur2 = document.getElementById('nom-joueur-2').value;
+            updatePlayerName();
+        }
+    </script>
+</body>
+</html>
